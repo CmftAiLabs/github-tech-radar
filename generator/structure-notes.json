@@ -1,0 +1,80 @@
+{
+ "h1": [
+  "Github Tech Radar"
+ ],
+ "h2": [
+  "AI Lab 重点雷达矩阵",
+  "三榜单总览",
+  "关键词热度排行",
+  "AI Lab 方向热力图",
+  "历史趋势",
+  "风险提醒"
+ ],
+ "h3": [
+  "今日",
+  "周度",
+  "月度",
+  "智能体运行趋势",
+  "usestrix/strix"
+ ],
+ "generated": [
+  "生成时间：2026-07-10 09:19:20 CST | GitHub Trending daily / weekly / monthly"
+ ],
+ "hero": [
+  "今日头部矩阵仓库聚焦Agent-Native CLI与MCP，凸显了Anthropic等AI Lab在工具调用编排上的最强信号。核心趋势深度结合agent memory与plugin治理，推动数据安全与私有化场景的PoC落地。"
+ ],
+ "section_notes": [
+  "按 AI Lab 方向相关性与工程复用性筛选；排序优先日榜、周榜、月榜，跨榜单项目以流光标注。"
+ ],
+ "kpis": [
+  [
+   "26",
+   "扫描项目"
+  ],
+  [
+   "10",
+   "雷达入选"
+  ],
+  [
+   "19",
+   "高相关"
+  ],
+  [
+   "2",
+   "风险提示"
+  ]
+ ],
+ "th": [
+  "榜单",
+  "Repository",
+  "GitHub收藏数",
+  "仓库复用数",
+  "技术核心摘要（开发视角）",
+  "AILab参考意义（产品视角）"
+ ],
+ "heat_head": [
+  "<strong>方向</strong><span>今日</span><span>周度</span><span>月度</span>"
+ ],
+ "badges": [
+  [
+   "sev-low",
+   "低"
+  ]
+ ],
+ "col_labels": [
+  "AI Lab 参考意义",
+  "GitHub收藏数",
+  "Repository",
+  "仓库复用数",
+  "技术核心摘要",
+  "榜单"
+ ],
+ "period_cells": [
+  "今日",
+  "周度",
+  "月度"
+ ],
+ "sev_words": [
+  "低"
+ ]
+}

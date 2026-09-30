@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <base target="_blank">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GitHub Tech Radar | AI Lab Daily Radar</title>
+  <script>
+    (() => {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get('embed') === 'dashboard') {
+        document.documentElement.dataset.embed = 'dashboard'
+      }
+    })()
+  </script>
+  <style>
+:root {
+      --bg: #F5F7FB;
+      --bg-elev: #FFFFFF;
+      --panel: #FFFFFF;
+      --panel-hover: #FAFBFE;
+      --border: #E7EBF2;
+      --border-strong: #D9DFEA;
+      --hairline: #EEF1F7;
+      --text-1: #111A2E;
+      --text-2: #46506A;
+      --text-3: #727D96;
+      --text-4: #A4ADBF;
+      --accent: #3257E0;
+      --accent-dim: rgba(50, 87, 224, .14);
+      --accent-faint: rgba(50, 87, 224, .06);
+      --accent-glow: rgba(50, 87, 224, .22);
+      --pos: #0E9F6E;
+      --warn: #C2710C;
+      --neg: #E5484D;
+      --signal-0: rgba(238, 241, 247, .95);
+      --signal-1: rgba(50, 87, 224, .10);
+      --signal-2: rgba(50, 87, 224, .18);
+      --signal-3: rgba(50, 87, 224, .26);
+      --signal-4: rgba(50, 87, 224, .36);
+      --signal-text-low: #727D96;
+      --signal-text-mid: #2541B6;
+      --signal-text-high: #111A2E;
+    }
+    * { box-sizing: border-box; }
+    html {
+      background: var(--bg);
+    }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(50, 87, 224, .055), transparent 45%),
+        radial-gradient(ellipse at 100% 100%, rgba(14, 159, 110, .035), transparent 48%),
+        var(--bg);
+      background-size: auto, auto, auto;
+      color: var(--text-1);
+      font-family: "PingFang SC", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+      font-feature-settings: "tnum" 1, "cv11" 1;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    header {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(50, 87, 224, .07), rgba(50, 87, 224, .018) 58%, transparent),
+        rgba(255, 255, 255, .94);
+      border-bottom: 1px solid var(--border);
+      color: var(--text-1);
+      padding: 22px 28px 18px;
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(105deg, rgba(37, 65, 182, .045) 0%, rgba(37, 65, 182, .12) 35%, rgba(255, 255, 255, .72) 48%, rgba(37, 65, 182, .12) 61%, rgba(37, 65, 182, .045) 100%);
+      background-size: 320% 100%;
+      animation: sweepOnce 5.4s linear infinite;
+      pointer-events: none;
+      opacity: .95;
+    }
+    header::before {
+      content: none;
+    }
+    main { max-width: 1840px; margin: 0 auto; padding: 24px 22px 52px; }
+    h1, h2, h3 { margin: 0 0 12px; line-height: 1.25; }
+    h1 {
+      color: var(--text-1);
+      font-size: 30px;
+      font-weight: 650;
+      letter-spacing: .01em;
+    }
+    h2 {
+      color: var(--text-1);
+      font-size: 20px;
+      font-weight: 650;
+      letter-spacing: .02em;
+      margin-top: 26px;
+    }
+    h3 {
+      color: var(--text-1);
+      font-size: 16px;
+      font-weight: 620;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color .16s ease, text-shadow .16s ease;
+    }
+    a:hover {
+      color: #2541B6;
+      text-shadow: 0 0 12px var(--accent-glow);
+    }
+    .header-grid {
+      position: relative;
+      z-index: 2;
+      max-width: 1840px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: start;
+    }
+    .hero {
+      max-width: 900px;
+      font-size: 15px;
+      color: var(--text-2);
+      margin-top: 8px;
+    }
+    .generated {
+      color: var(--text-3);
+      margin: 6px 0 0;
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+    .header-kpis { display: grid; grid-template-columns: repeat(4, 82px); gap: 8px; }
+    .header-kpi {
+      border: 1px solid rgba(50, 87, 224, .22);
+      border-radius: 6px;
+      padding: 9px 10px;
+      background: rgba(50,87,224,.05);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+    }
+    .header-kpi strong {
+      display: block;
+      color: var(--text-1);
+      font-size: 20px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      font-weight: 520;
+    }
+    .header-kpi span {
+      display: block;
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: .06em;
+    }
+    .muted { color: var(--text-3); }
+    .section-note { margin: -4px 0 14px; color: var(--text-3); font-size: 13px; }
+    .section, .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px;
+      margin: 16px 0;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+    }
+    .card:hover { background: var(--panel-hover); border-color: var(--border-strong); }
+    .overview, .two-col, .alert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 2px 4px 2px 0;
+      white-space: nowrap;
+    }
+    .rel-high, .conf-high { background: rgba(14, 159, 110, .11); color: var(--pos); border: 1px solid rgba(14, 159, 110, .24); }
+    .rel-medium, .conf-medium { background: rgba(50, 87, 224, .10); color: var(--accent); border: 1px solid rgba(50, 87, 224, .24); }
+    .rel-low, .conf-low { background: rgba(114, 125, 150, .10); color: var(--text-2); border: 1px solid rgba(114, 125, 150, .20); }
+    .sev-low { background: rgba(50, 87, 224, .10); color: var(--accent); border: 1px solid rgba(50, 87, 224, .24); }
+    .sev-medium { background: rgba(194, 113, 12, .12); color: var(--warn); border: 1px solid rgba(194, 113, 12, .26); }
+    .sev-high { background: rgba(229, 72, 77, .11); color: var(--neg); border: 1px solid rgba(229, 72, 77, .24); }
+    .language-tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+      background: rgba(148, 163, 184, .11);
+      border: 1px solid rgba(148, 163, 184, .2);
+      color: var(--text-2);
+      white-space: nowrap;
+    }
+    .lang-python { background: rgba(37, 99, 235, .10); color: #1D4ED8; border-color: rgba(37, 99, 235, .22); }
+    .lang-javascript { background: rgba(202, 138, 4, .12); color: #A16207; border-color: rgba(202, 138, 4, .24); }
+    .lang-typescript, .lang-type-script { background: rgba(109, 40, 217, .10); color: #6D28D9; border-color: rgba(109, 40, 217, .22); box-shadow: inset 0 1px 0 rgba(255,255,255,.72); }
+    .lang-java { background: rgba(229, 72, 77, .10); color: #B91C1C; border-color: rgba(229, 72, 77, .22); }
+    .lang-jupyter-notebook { background: rgba(194, 113, 12, .12); color: #B45309; border-color: rgba(194, 113, 12, .24); }
+    .lang-markdown { background: rgba(114, 125, 150, .10); color: #46506A; border-color: rgba(114, 125, 150, .22); }
+    .lang-go { background: rgba(14, 116, 144, .10); color: #155E75; border-color: rgba(14, 116, 144, .22); }
+    .lang-rust { background: rgba(194, 113, 12, .12); color: #B45309; border-color: rgba(194, 113, 12, .24); }
+    .lang-html { background: rgba(219, 39, 119, .10); color: #BE185D; border-color: rgba(219, 39, 119, .22); }
+    .lang-shell { background: rgba(14, 159, 110, .10); color: #057857; border-color: rgba(14, 159, 110, .22); }
+    .lang-cplusplus, .lang-cplusplusplus { background: rgba(124, 58, 237, .10); color: #6D28D9; border-color: rgba(124, 58, 237, .22); }
+    .repo-title { font-weight: 700; overflow-wrap: anywhere; }
+    .overview .repo-title { font-size: 12.5px; }
+    .repo-language { margin-top: 6px; }
+    .repo-keywords, .repo-metrics { margin-top: 4px; color: var(--text-3); font-size: 12px; line-height: 1.45; }
+    .repo-metrics { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+    .metric {
+      color: var(--text-2);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 11px rgba(50, 87, 224, .08);
+    }
+    .metric-icon {
+      color: var(--accent);
+      font-weight: 760;
+      margin-right: 4px;
+      text-shadow: 0 0 10px rgba(50, 87, 224, .12);
+    }
+    .metric-num {
+      color: var(--text-1);
+      font-weight: 650;
+      text-shadow: 0 0 12px rgba(50, 87, 224, .10);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border: 1px solid var(--border); padding: 8px; vertical-align: top; text-align: left; }
+    th { background: var(--panel-hover); color: var(--text-2); white-space: nowrap; font-weight: 650; }
+    td { color: var(--text-2); }
+    .matrix-table { table-layout: fixed; font-size: 12.5px; }
+    .matrix-table th, .matrix-table td { padding: 7px 8px; line-height: 1.45; }
+    .matrix-table .col-period { width: 5.5%; }
+    .matrix-table .col-repo { width: 21%; }
+    .matrix-table .col-count { width: 8%; }
+    .matrix-table .col-summary { width: 28.75%; }
+    .matrix-table tr.cross-period-row td {
+      background:
+        linear-gradient(105deg, rgba(37, 65, 182, .04) 0%, rgba(37, 65, 182, .11) 36%, rgba(255, 255, 255, .72) 48%, rgba(37, 65, 182, .11) 60%, rgba(37, 65, 182, .04) 100%);
+      background-size: 320% 100%;
+      animation: sweepOnce 5.8s linear infinite;
+    }
+    @keyframes sweepOnce {
+      from { background-position: 140% 0; }
+      to { background-position: -140% 0; }
+    }
+    .matrix-table td:nth-child(5), .matrix-table td:nth-child(6) { color: var(--text-2); }
+    .compact-section {
+      padding: 14px;
+      margin: 10px 0;
+    }
+    .compact-section h2 {
+      font-size: 17px;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    .compact-section h3 {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+    .compact-section p {
+      margin: 6px 0 0;
+      color: var(--text-2);
+      line-height: 1.45;
+    }
+    .compact-section .card {
+      padding: 12px;
+      margin: 8px 0 0;
+    }
+    .compact-section .repo-keywords,
+    .compact-section .repo-metrics {
+      line-height: 1.35;
+    }
+    .compact-grid {
+      gap: 10px;
+    }
+    .compact-section .overview {
+      gap: 10px;
+    }
+    .overview ol { padding-left: 20px; margin-bottom: 0; }
+    .overview li { margin: 7px 0; }
+    .bar-row { display: grid; grid-template-columns: 220px 1fr 42px; gap: 10px; align-items: center; margin: 6px 0; }
+    .bar-track { height: 8px; background: var(--signal-0); border: 1px solid rgba(50, 87, 224, .16); border-radius: 999px; overflow: hidden; }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, rgba(50, 87, 224, .28), rgba(50, 87, 224, .48), rgba(37, 65, 182, .62));
+      border-radius: 999px;
+      box-shadow: 0 0 10px rgba(50, 87, 224, .12);
+    }
+    .heatmap { display: grid; gap: 6px; }
+    .heat-row { display: grid; grid-template-columns: minmax(180px, 1.5fr) repeat(3, 80px); gap: 8px; align-items: center; }
+    .heat-row strong { font-weight: 500; }
+    .heat-row.muted strong { font-weight: 650; }
+    .heat-cell { height: 24px; border-radius: 5px; background: var(--signal-0); border: 1px solid rgba(50, 87, 224, .16); text-align: center; font-size: 12px; padding-top: 3px; color: var(--signal-text-low); font-variant-numeric: tabular-nums; }
+    .heat-1 { background: var(--signal-1); color: var(--signal-text-low); border-color: rgba(50, 87, 224, .22); }
+    .heat-2 { background: var(--signal-2); color: var(--signal-text-mid); border-color: rgba(50, 87, 224, .28); }
+    .heat-3 { background: var(--signal-3); color: var(--signal-text-high); border-color: rgba(50, 87, 224, .34); box-shadow: 0 0 10px rgba(50, 87, 224, .12); }
+    .heat-4 { background: var(--signal-4); color: var(--text-1); border-color: rgba(50, 87, 224, .42); box-shadow: 0 0 12px rgba(50, 87, 224, .16); }
+    .mini-matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+    html[data-embed="dashboard"] body { line-height: 1.62; }
+    html[data-embed="dashboard"] h1 { font-size: 40px; }
+    html[data-embed="dashboard"] h2 { font-size: 27px; }
+    html[data-embed="dashboard"] h3 { font-size: 21px; }
+    html[data-embed="dashboard"] .hero { font-size: 20px; }
+    html[data-embed="dashboard"] .generated { font-size: 15px; }
+    html[data-embed="dashboard"] .header-kpi strong { font-size: 27px; }
+    html[data-embed="dashboard"] .header-kpi span { font-size: 14px; }
+    html[data-embed="dashboard"] .section-note { font-size: 17px; }
+    html[data-embed="dashboard"] .badge { font-size: 15px; }
+    html[data-embed="dashboard"] .language-tag { font-size: 14px; }
+    html[data-embed="dashboard"] .overview .repo-title { font-size: 17px; }
+    html[data-embed="dashboard"] .repo-keywords,
+    html[data-embed="dashboard"] .repo-metrics { font-size: 16px; }
+    html[data-embed="dashboard"] table { font-size: 17px; }
+    html[data-embed="dashboard"] .matrix-table { font-size: 17px; }
+    html[data-embed="dashboard"] .matrix-table th,
+    html[data-embed="dashboard"] .matrix-table td { line-height: 1.55; }
+    html[data-embed="dashboard"] .compact-section h2 { font-size: 24px; }
+    html[data-embed="dashboard"] .compact-section h3 { font-size: 19px; }
+    html[data-embed="dashboard"] .compact-section p { font-size: 17px; }
+    html[data-embed="dashboard"] .heat-cell { font-size: 15px; padding-top: 1px; }
+    @media (max-width: 900px) {
+      .header-grid { grid-template-columns: 1fr; }
+      .header-kpis { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 760px) {
+      header { padding: 18px 16px 16px; }
+      main { padding: 14px 12px 32px; }
+      h1 { font-size: 26px; }
+      h2 { font-size: 19px; }
+      .hero { font-size: 16px; }
+      .section, .card { padding: 14px; }
+      .matrix-table, .matrix-table tbody, .matrix-table tr, .matrix-table td { display: block; width: 100%; }
+      .matrix-table colgroup, .matrix-table thead { display: none; }
+      .matrix-table tr {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        margin: 12px 0;
+        overflow: hidden;
+        background: var(--panel);
+      }
+      .matrix-table td {
+        border: 0;
+        border-bottom: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 10px;
+        padding: 9px 10px;
+      }
+      .matrix-table td:last-child { border-bottom: 0; }
+      .matrix-table td::before {
+        content: attr(data-label);
+        color: var(--text-3);
+        font-weight: 700;
+      }
+      .heat-row { grid-template-columns: minmax(110px, 1fr) repeat(3, 42px); gap: 6px; }
+      .bar-row { grid-template-columns: 120px 1fr 34px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-grid">
+      <div>
+        <h1>Github Tech Radar</h1>
+        <p class="generated">生成时间：2026-09-30 14:37:44 CST | GitHub Trending daily / weekly / monthly</p>
+        <p class="hero">今日头部矩阵聚焦「记忆与 RAG」，候选池 46 个仓库中 7 个同时登上多档榜单，显示该方向的热度并非脉冲式炒作。另有 1 个项目触发风险提示，引入前请先过安全评审。</p>
+      </div>
+      <div class="header-kpis">
+          <div class="header-kpi">
+            <strong>46</strong>
+            <span>扫描项目</span>
+          </div>
+          <div class="header-kpi">
+            <strong>10</strong>
+            <span>雷达入选</span>
+          </div>
+          <div class="header-kpi">
+            <strong>32</strong>
+            <span>高相关</span>
+          </div>
+          <div class="header-kpi">
+            <strong>1</strong>
+            <span>风险提示</span>
+          </div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="section">
+      <h2>AI Lab 重点雷达矩阵</h2>
+      <p class="section-note">按 AI Lab 方向相关性与工程复用性筛选；排序优先日榜、周榜、月榜，跨榜单项目以流光标注。</p>
+      <table class="matrix-table">
+        <colgroup>
+          <col class="col-period">
+          <col class="col-repo">
+          <col class="col-count">
+          <col class="col-count">
+          <col class="col-summary">
+          <col class="col-summary">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>榜单</th><th>Repository</th><th>GitHub收藏数</th><th>仓库复用数</th>
+            <th>技术核心摘要（开发视角）</th><th>AI Lab 参考意义（产品视角）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cross-period-row">
+            <td data-label="榜单">今日</td>
+            <td data-label="Repository">
+              <a class="repo-title" href="https://github.com/vectorize-io/hindsight">vectorize-io/hindsight</a>
+              <div class="repo-language">
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </td>
+            <td data-label="GitHub收藏数" class="metric" aria-label="Star 43.2k"><span class="metric-icon">★</span> <span class="metric-num">43.2k</span></td>
+            <td data-label="仓库复用数" class="metric" aria-label="Fork 5.8k"><span class="metric-icon">Fork</span> <span class="metric-num">5.8k</span></td>
+            <td data-label="技术核心摘要">Hindsight: Agent Memory That Learns</td>
+            <td data-label="AI Lab 参考意义">对应方向：记忆与 RAG，具备内部工程复用与评估价值。</td>
+          </tr>
+          <tr class="cross-period-row">
+            <td data-label="榜单">今日</td>
+            <td data-label="Repository">
+              <a class="repo-title" href="https://github.com/debpalash/VoiceStudio">debpalash/VoiceStudio</a>
+              <div class="repo-language">
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </td>
+            <td data-label="GitHub收藏数" class="metric" aria-label="Star 48.9k"><span class="metric-icon">★</span> <span class="metric-num">48.9k</span></td>
+            <td data-label="仓库复用数" class="metric" aria-label="Fork 5.5k"><span class="metric-icon">Fork</span> <span class="metric-num">5.5k</span></td>
+            <td data-label="技术核心摘要">VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictation, transcription &amp; audiobook creation in 646 languages.</td>
+            <td data-label="AI Lab 参考意义">对应方向：多模态与语音，具备内部工程复用与评估价值。</td>
+          </tr>
+          <tr class="cross-period-row">
+            <td data-label="榜单">周度</td>
+            <td data-label="Repository">
+              <a class="repo-title" href="https://github.com/Tencent/WeKnora">Tencent/WeKnora</a>
+              <div class="repo-language">
+                <span class="language-tag lang-go">Go</span>
+              </div>
+            </td>
+            <td data-label="GitHub收藏数" class="metric" aria-label="Star 31.3k"><span class="metric-icon">★</span> <span class="metric-num">31.3k</span></td>
+            <td data-label="仓库复用数" class="metric" aria-label="Fork 4.2k"><span class="metric-icon">Fork</span> <span class="metric-num">4.2k</span></td>
+            <td data-label="技术核心摘要">Open-source LLM knowledge platform: turn raw documents into a queryable RAG, an autonomous reasoning agent, and a self-maintaining Wiki.</td>
+            <td data-label="AI Lab 参考意义">对应方向：记忆与 RAG，具备内部工程复用与评估价值。</td>
+          </tr>
+          <tr class="cross-period-row">
+            <td data-label="榜单">今日</td>
+            <td data-label="Repository">
+              <a class="repo-title" href="https://github.com/rohitg00/ai-engineering-from-scratch">rohitg00/ai-engineering-from-scratch</a>
+              <div class="repo-language">
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </td>
+            <td data-label="GitHub收藏数" class="metric" aria-label="Star 61.7k"><span class="metric-icon">★</span> <span class="metric-num">61.7k</span></td>
+            <td data-label="仓库复用数" class="metric" aria-label="Fork 10.6k"><span class="metric-icon">Fork</span> <span class="metric-num">10.6k</span></td>
+            <td data-label="技术核心摘要">Learn it. Build it. Ship it for others.</td>
+            <td data-label="AI Lab 参考意义">AI 相关项目，建议保持观察。</td>
+          </tr>
+          <tr>
+            <td data-label="榜单">周度</td>
+            <td data-label="Repository">
+              <a class="repo-title" href="https://github.com/stablyai/orca">stablyai/orca</a>
+              <div class="repo-language">
+                <span class="language-tag lang-typescript">TypeScript</span>
+              </div>
+            </td>
+            <td data-label="GitHub收藏数" class="metric" aria-label="Star 81.8k"><span class="metric-icon">★</span> <span class="metric-num">81.8k</span></td>
+            <td data-label="仓库复用数" class="metric" aria-label="Fork 5.3k"><span class="metric-icon">Fork</span> <span class="metric-num">5.3k</span></td>
+            <td data-label="技术核心摘要">Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime.</td>
+            <td data-label="AI Lab 参考意义">对应方向：编码智能体、推理与部署，具备内部工程复用与评估价值。</td>
+          </tr>
+          <tr>
+            <td data-label="榜单">今日</td>
+            <td data-label="Repository">
+              <a class="repo-title" href="https://github.com/dream-num/univer">dream-num/univer</a>
+              <div class="repo-language">
+                <span class="language-tag lang-typescript">TypeScript</span>
+              </div>
+            </td>
+            <td data-label="GitHub收藏数" class="metric" aria-label="Star 22k"><span class="metric-icon">★</span> <span class="metric-num">22k</span></td>
+            <td data-label="仓库复用数" class="metric" aria-label="Fork 1.9k"><span class="metric-icon">Fork</span> <span class="metric-num">1.9k</span></td>
+            <td data-label="技术核心摘要">The Office Harness for AI Agents — Spreadsheets, Docs, Slides, Canvas, Relational Tables, and PDF in one runtime.</td>
+            <td data-label="AI Lab 参考意义">对应方向：推理与部署、AI 应用与工作流，具备内部工程复用与评估价值。</td>
+          </tr>
+          <tr>
+            <td data-label="榜单">周度</td>
+            <td data-label="Repository">
+              <a class="repo-title" href="https://github.com/TencentCloud/Octop">TencentCloud/Octop</a>
+              <div class="repo-language">
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </td>
+            <td data-label="GitHub收藏数" class="metric" aria-label="Star 5.9k"><span class="metric-icon">★</span> <span class="metric-num">5.9k</span></td>
+            <td data-label="仓库复用数" class="metric" aria-label="Fork 738"><span class="metric-icon">Fork</span> <span class="metric-num">738</span></td>
+            <td data-label="技术核心摘要">A smarter, self-hosted AI assistant — multi-user, multi-agent.</td>
+            <td data-label="AI Lab 参考意义">对应方向：Agent 运行与编排、AI 应用与工作流，具备内部工程复用与评估价值。</td>
+          </tr>
+          <tr>
+            <td data-label="榜单">月度</td>
+            <td data-label="Repository">
+              <a class="repo-title" href="https://github.com/mksglu/context-mode">mksglu/context-mode</a>
+              <div class="repo-language">
+                <span class="language-tag lang-typescript">TypeScript</span>
+              </div>
+            </td>
+            <td data-label="GitHub收藏数" class="metric" aria-label="Star 24.3k"><span class="metric-icon">★</span> <span class="metric-num">24.3k</span></td>
+            <td data-label="仓库复用数" class="metric" aria-label="Fork 1.8k"><span class="metric-icon">Fork</span> <span class="metric-num">1.8k</span></td>
+            <td data-label="技术核心摘要">Context window optimization for AI coding agents. Sandboxes tool output (98% reduction), persists session memory, and enforces routing across 17 platforms via MCP + hooks.</td>
+            <td data-label="AI Lab 参考意义">对应方向：MCP / 工具生态、记忆与 RAG，具备内部工程复用与评估价值。</td>
+          </tr>
+          <tr>
+            <td data-label="榜单">周度</td>
+            <td data-label="Repository">
+              <a class="repo-title" href="https://github.com/cloudflare/security-audit-skill">cloudflare/security-audit-skill</a>
+              <div class="repo-language">
+                <span class="language-tag lang-javascript">JavaScript</span>
+              </div>
+            </td>
+            <td data-label="GitHub收藏数" class="metric" aria-label="Star 23.3k"><span class="metric-icon">★</span> <span class="metric-num">23.3k</span></td>
+            <td data-label="仓库复用数" class="metric" aria-label="Fork 1.4k"><span class="metric-icon">Fork</span> <span class="metric-num">1.4k</span></td>
+            <td data-label="技术核心摘要">A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings</td>
+            <td data-label="AI Lab 参考意义">对应方向：安全与评测，具备内部工程复用与评估价值。</td>
+          </tr>
+          <tr>
+            <td data-label="榜单">今日</td>
+            <td data-label="Repository">
+              <a class="repo-title" href="https://github.com/VectifyAI/PageIndex">VectifyAI/PageIndex</a>
+              <div class="repo-language">
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </td>
+            <td data-label="GitHub收藏数" class="metric" aria-label="Star 37.6k"><span class="metric-icon">★</span> <span class="metric-num">37.6k</span></td>
+            <td data-label="仓库复用数" class="metric" aria-label="Fork 3.3k"><span class="metric-icon">Fork</span> <span class="metric-num">3.3k</span></td>
+            <td data-label="技术核心摘要">📑 PageIndex: Document Index for Vectorless, Reasoning-based RAG</td>
+            <td data-label="AI Lab 参考意义">对应方向：记忆与 RAG，具备内部工程复用与评估价值。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section compact-section">
+      <h2>三榜单总览</h2>
+      <div class="overview">
+
+        <div class="card">
+          <h3>今日</h3>
+          <ol>
+            <li>
+              <a class="repo-title" href="https://github.com/debpalash/VoiceStudio">debpalash/VoiceStudio</a>
+              <div class="repo-keywords">多模态与语音</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 48.9k"><span class="metric-icon">★</span> <span class="metric-num">48.9k</span></span>
+                <span class="metric" aria-label="Fork 5.5k"><span class="metric-icon">Fork</span> <span class="metric-num">5.5k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/NVIDIA/OpenShell">NVIDIA/OpenShell</a>
+              <div class="repo-keywords">推理与部署</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 10.9k"><span class="metric-icon">★</span> <span class="metric-num">10.9k</span></span>
+                <span class="metric" aria-label="Fork 1.4k"><span class="metric-icon">Fork</span> <span class="metric-num">1.4k</span></span>
+                <span class="language-tag lang-rust">Rust</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/vectorize-io/hindsight">vectorize-io/hindsight</a>
+              <div class="repo-keywords">记忆与 RAG</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 43.2k"><span class="metric-icon">★</span> <span class="metric-num">43.2k</span></span>
+                <span class="metric" aria-label="Fork 5.8k"><span class="metric-icon">Fork</span> <span class="metric-num">5.8k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/paperclipai/paperclip">paperclipai/paperclip</a>
+              <div class="repo-keywords">通用工具</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 94.7k"><span class="metric-icon">★</span> <span class="metric-num">94.7k</span></span>
+                <span class="metric" aria-label="Fork 16.1k"><span class="metric-icon">Fork</span> <span class="metric-num">16.1k</span></span>
+                <span class="language-tag lang-typescript">TypeScript</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/t8y2/dbx">t8y2/dbx</a>
+              <div class="repo-keywords">MCP / 工具生态</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 22.4k"><span class="metric-icon">★</span> <span class="metric-num">22.4k</span></span>
+                <span class="metric" aria-label="Fork 2.1k"><span class="metric-icon">Fork</span> <span class="metric-num">2.1k</span></span>
+                <span class="language-tag lang-rust">Rust</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/mvschwarz/openrig">mvschwarz/openrig</a>
+              <div class="repo-keywords">Agent 运行与编排</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 2.6k"><span class="metric-icon">★</span> <span class="metric-num">2.6k</span></span>
+                <span class="metric" aria-label="Fork 181"><span class="metric-icon">Fork</span> <span class="metric-num">181</span></span>
+                <span class="language-tag lang-typescript">TypeScript</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/oblien/openship">oblien/openship</a>
+              <div class="repo-keywords">通用工具</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 14k"><span class="metric-icon">★</span> <span class="metric-num">14k</span></span>
+                <span class="metric" aria-label="Fork 1.3k"><span class="metric-icon">Fork</span> <span class="metric-num">1.3k</span></span>
+                <span class="language-tag lang-typescript">TypeScript</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/averygan/reclip">averygan/reclip</a>
+              <div class="repo-keywords">通用工具</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 10.3k"><span class="metric-icon">★</span> <span class="metric-num">10.3k</span></span>
+                <span class="metric" aria-label="Fork 1.5k"><span class="metric-icon">Fork</span> <span class="metric-num">1.5k</span></span>
+                <span class="language-tag lang-html">HTML</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/cs341-illinois/coursebook">cs341-illinois/coursebook</a>
+              <div class="repo-keywords">通用工具</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 3.2k"><span class="metric-icon">★</span> <span class="metric-num">3.2k</span></span>
+                <span class="metric" aria-label="Fork 278"><span class="metric-icon">Fork</span> <span class="metric-num">278</span></span>
+                <span class="language-tag lang-other">TeX</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/rohitg00/ai-engineering-from-scratch">rohitg00/ai-engineering-from-scratch</a>
+              <div class="repo-keywords">AI 相关</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 61.7k"><span class="metric-icon">★</span> <span class="metric-num">61.7k</span></span>
+                <span class="metric" aria-label="Fork 10.6k"><span class="metric-icon">Fork</span> <span class="metric-num">10.6k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>周度</h3>
+          <ol>
+            <li>
+              <a class="repo-title" href="https://github.com/paperclipai/paperclip">paperclipai/paperclip</a>
+              <div class="repo-keywords">通用工具</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 94.7k"><span class="metric-icon">★</span> <span class="metric-num">94.7k</span></span>
+                <span class="metric" aria-label="Fork 16.1k"><span class="metric-icon">Fork</span> <span class="metric-num">16.1k</span></span>
+                <span class="language-tag lang-typescript">TypeScript</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/anthropics/financial-services">anthropics/financial-services</a>
+              <div class="repo-keywords">通用工具</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 38.3k"><span class="metric-icon">★</span> <span class="metric-num">38.3k</span></span>
+                <span class="metric" aria-label="Fork 5.5k"><span class="metric-icon">Fork</span> <span class="metric-num">5.5k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/vectorize-io/hindsight">vectorize-io/hindsight</a>
+              <div class="repo-keywords">记忆与 RAG</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 43.2k"><span class="metric-icon">★</span> <span class="metric-num">43.2k</span></span>
+                <span class="metric" aria-label="Fork 5.8k"><span class="metric-icon">Fork</span> <span class="metric-num">5.8k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/debpalash/VoiceStudio">debpalash/VoiceStudio</a>
+              <div class="repo-keywords">多模态与语音</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 48.9k"><span class="metric-icon">★</span> <span class="metric-num">48.9k</span></span>
+                <span class="metric" aria-label="Fork 5.5k"><span class="metric-icon">Fork</span> <span class="metric-num">5.5k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/rohitg00/ai-engineering-from-scratch">rohitg00/ai-engineering-from-scratch</a>
+              <div class="repo-keywords">AI 相关</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 61.7k"><span class="metric-icon">★</span> <span class="metric-num">61.7k</span></span>
+                <span class="metric" aria-label="Fork 10.6k"><span class="metric-icon">Fork</span> <span class="metric-num">10.6k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/vercel/next.js">vercel/next.js</a>
+              <div class="repo-keywords">通用工具</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 142.9k"><span class="metric-icon">★</span> <span class="metric-num">142.9k</span></span>
+                <span class="metric" aria-label="Fork 33.5k"><span class="metric-icon">Fork</span> <span class="metric-num">33.5k</span></span>
+                <span class="language-tag lang-javascript">JavaScript</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/HKUDS/CLI-Anything">HKUDS/CLI-Anything</a>
+              <div class="repo-keywords">AI 相关</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 51k"><span class="metric-icon">★</span> <span class="metric-num">51k</span></span>
+                <span class="metric" aria-label="Fork 4.7k"><span class="metric-icon">Fork</span> <span class="metric-num">4.7k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/davila7/claude-code-templates">davila7/claude-code-templates</a>
+              <div class="repo-keywords">AI 相关</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 32.2k"><span class="metric-icon">★</span> <span class="metric-num">32.2k</span></span>
+                <span class="metric" aria-label="Fork 3.7k"><span class="metric-icon">Fork</span> <span class="metric-num">3.7k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/stablyai/orca">stablyai/orca</a>
+              <div class="repo-keywords">编码智能体</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 81.8k"><span class="metric-icon">★</span> <span class="metric-num">81.8k</span></span>
+                <span class="metric" aria-label="Fork 5.3k"><span class="metric-icon">Fork</span> <span class="metric-num">5.3k</span></span>
+                <span class="language-tag lang-typescript">TypeScript</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/pytorch/pytorch">pytorch/pytorch</a>
+              <div class="repo-keywords">推理与部署</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 103.5k"><span class="metric-icon">★</span> <span class="metric-num">103.5k</span></span>
+                <span class="metric" aria-label="Fork 31k"><span class="metric-icon">Fork</span> <span class="metric-num">31k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>月度</h3>
+          <ol>
+            <li>
+              <a class="repo-title" href="https://github.com/bilawalsidhu/gods-eye-view">bilawalsidhu/gods-eye-view</a>
+              <div class="repo-keywords">AI 应用与工作流</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 45.2k"><span class="metric-icon">★</span> <span class="metric-num">45.2k</span></span>
+                <span class="metric" aria-label="Fork 9.2k"><span class="metric-icon">Fork</span> <span class="metric-num">9.2k</span></span>
+                <span class="language-tag lang-javascript">JavaScript</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/alibaba/open-code-review">alibaba/open-code-review</a>
+              <div class="repo-keywords">编码智能体</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 42.7k"><span class="metric-icon">★</span> <span class="metric-num">42.7k</span></span>
+                <span class="metric" aria-label="Fork 3.1k"><span class="metric-icon">Fork</span> <span class="metric-num">3.1k</span></span>
+                <span class="language-tag lang-go">Go</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/affaan-m/ECC">affaan-m/ECC</a>
+              <div class="repo-keywords">记忆与 RAG</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 269.8k"><span class="metric-icon">★</span> <span class="metric-num">269.8k</span></span>
+                <span class="metric" aria-label="Fork 40.3k"><span class="metric-icon">Fork</span> <span class="metric-num">40.3k</span></span>
+                <span class="language-tag lang-javascript">JavaScript</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/tt-a1i/archify">tt-a1i/archify</a>
+              <div class="repo-keywords">AI 应用与工作流</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 74.5k"><span class="metric-icon">★</span> <span class="metric-num">74.5k</span></span>
+                <span class="metric" aria-label="Fork 5k"><span class="metric-icon">Fork</span> <span class="metric-num">5k</span></span>
+                <span class="language-tag lang-javascript">JavaScript</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a>
+              <div class="repo-keywords">编码智能体</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 52.2k"><span class="metric-icon">★</span> <span class="metric-num">52.2k</span></span>
+                <span class="metric" aria-label="Fork 3k"><span class="metric-icon">Fork</span> <span class="metric-num">3k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/Tencent/WeKnora">Tencent/WeKnora</a>
+              <div class="repo-keywords">记忆与 RAG</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 31.3k"><span class="metric-icon">★</span> <span class="metric-num">31.3k</span></span>
+                <span class="metric" aria-label="Fork 4.2k"><span class="metric-icon">Fork</span> <span class="metric-num">4.2k</span></span>
+                <span class="language-tag lang-go">Go</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/superdesigndev/treg">superdesigndev/treg</a>
+              <div class="repo-keywords">AI 相关</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 3.9k"><span class="metric-icon">★</span> <span class="metric-num">3.9k</span></span>
+                <span class="metric" aria-label="Fork 320"><span class="metric-icon">Fork</span> <span class="metric-num">320</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/THU-MAIC/OpenMAIC">THU-MAIC/OpenMAIC</a>
+              <div class="repo-keywords">Agent 运行与编排</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 39.6k"><span class="metric-icon">★</span> <span class="metric-num">39.6k</span></span>
+                <span class="metric" aria-label="Fork 6.1k"><span class="metric-icon">Fork</span> <span class="metric-num">6.1k</span></span>
+                <span class="language-tag lang-typescript">TypeScript</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/anthropics/financial-services">anthropics/financial-services</a>
+              <div class="repo-keywords">通用工具</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 38.3k"><span class="metric-icon">★</span> <span class="metric-num">38.3k</span></span>
+                <span class="metric" aria-label="Fork 5.5k"><span class="metric-icon">Fork</span> <span class="metric-num">5.5k</span></span>
+                <span class="language-tag lang-python">Python</span>
+              </div>
+            </li>
+            <li>
+              <a class="repo-title" href="https://github.com/fmtlib/fmt">fmtlib/fmt</a>
+              <div class="repo-keywords">通用工具</div>
+              <div class="repo-metrics">
+                <span class="metric" aria-label="Star 25.8k"><span class="metric-icon">★</span> <span class="metric-num">25.8k</span></span>
+                <span class="metric" aria-label="Fork 3.1k"><span class="metric-icon">Fork</span> <span class="metric-num">3.1k</span></span>
+                <span class="language-tag lang-c">C++</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="two-col compact-grid">
+      <div class="section compact-section">
+        <h2>关键词热度排行</h2>
+          <div class="bar-row">
+            <span>agent</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div>
+            <span class="muted">21</span>
+          </div>
+          <div class="bar-row">
+            <span>cli</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 33%"></div></div>
+            <span class="muted">7</span>
+          </div>
+          <div class="bar-row">
+            <span>mcp</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 19%"></div></div>
+            <span class="muted">4</span>
+          </div>
+          <div class="bar-row">
+            <span>coding</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 19%"></div></div>
+            <span class="muted">4</span>
+          </div>
+          <div class="bar-row">
+            <span>video</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 19%"></div></div>
+            <span class="muted">4</span>
+          </div>
+          <div class="bar-row">
+            <span>memory</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 14%"></div></div>
+            <span class="muted">3</span>
+          </div>
+          <div class="bar-row">
+            <span>security</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 14%"></div></div>
+            <span class="muted">3</span>
+          </div>
+          <div class="bar-row">
+            <span>rag</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div>
+            <span class="muted">2</span>
+          </div>
+          <div class="bar-row">
+            <span>workflow</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div>
+            <span class="muted">2</span>
+          </div>
+          <div class="bar-row">
+            <span>voice</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 5%"></div></div>
+            <span class="muted">1</span>
+          </div>
+          <div class="bar-row">
+            <span>training</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 5%"></div></div>
+            <span class="muted">1</span>
+          </div>
+          <div class="bar-row">
+            <span>browser</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 5%"></div></div>
+            <span class="muted">1</span>
+          </div>
+      </div>
+      <div class="section compact-section">
+        <h2>AI Lab 方向热力图</h2>
+        <div class="heatmap">
+          <div class="heat-row muted"><strong>方向</strong><span>今日</span><span>周度</span><span>月度</span></div>
+            <div class="heat-row">
+              <strong>记忆与 RAG</strong>
+              <span class="heat-cell heat-3">2</span>
+              <span class="heat-cell heat-3">2</span>
+              <span class="heat-cell heat-4">4</span>
+            </div>
+            <div class="heat-row">
+              <strong>MCP / 工具生态</strong>
+              <span class="heat-cell heat-2">1</span>
+              <span class="heat-cell heat-0">0</span>
+              <span class="heat-cell heat-4">4</span>
+            </div>
+            <div class="heat-row">
+              <strong>AI 应用与工作流</strong>
+              <span class="heat-cell heat-2">1</span>
+              <span class="heat-cell heat-3">2</span>
+              <span class="heat-cell heat-3">2</span>
+            </div>
+            <div class="heat-row">
+              <strong>推理与部署</strong>
+              <span class="heat-cell heat-3">2</span>
+              <span class="heat-cell heat-3">2</span>
+              <span class="heat-cell heat-0">0</span>
+            </div>
+            <div class="heat-row">
+              <strong>多模态与语音</strong>
+              <span class="heat-cell heat-2">1</span>
+              <span class="heat-cell heat-2">1</span>
+              <span class="heat-cell heat-2">1</span>
+            </div>
+            <div class="heat-row">
+              <strong>Agent 运行与编排</strong>
+              <span class="heat-cell heat-2">1</span>
+              <span class="heat-cell heat-2">1</span>
+              <span class="heat-cell heat-2">1</span>
+            </div>
+            <div class="heat-row">
+              <strong>编码智能体</strong>
+              <span class="heat-cell heat-0">0</span>
+              <span class="heat-cell heat-2">1</span>
+              <span class="heat-cell heat-3">2</span>
+            </div>
+            <div class="heat-row">
+              <strong>安全与评测</strong>
+              <span class="heat-cell heat-0">0</span>
+              <span class="heat-cell heat-2">1</span>
+              <span class="heat-cell heat-0">0</span>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section compact-section">
+      <h2>历史趋势</h2>
+      <h3>持续上榜与跨榜观察</h3>
+      <p>跨榜持续（7 个）：VoiceStudio、hindsight、paperclip、ai-engineering-from-scratch、financial-services。单日爆发后回落属正常噪声；连续两期上榜的项目更值得进入 PoC 备选。</p>
+    </section>
+
+    <section class="section">
+      <h2>风险提醒</h2>
+      <div class="alert-grid">
+          <div class="card">
+            <h3><a href="https://github.com/bilawalsidhu/gods-eye-view">bilawalsidhu/gods-eye-view</a></h3>
+            <p><span class="badge sev-high">高</span> 涉监控/隐私敏感场景，禁止内部直接引入</p>
+          </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,42 @@
+name: Daily Tech Radar
+
+on:
+  schedule:
+    - cron: '20 1 * * *'   # UTC 01:20 = 北京 09:20
+  workflow_dispatch: {}     # 允许手动补跑
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install deps
+        run: npm install
+        working-directory: generator
+
+      - name: Generate radar
+        run: node generate.mjs
+        working-directory: generator
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+
+      - name: Commit & push docs
+        run: |
+          git config user.name "tech-radar-bot"
+          git config user.email "radar@users.noreply.github.com"
+          git add docs
+          if git diff --cached --quiet; then
+            echo "no changes"; exit 0
+          fi
+          git commit -m "radar: $(date -u +%F)"
+          git push
