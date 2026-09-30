@@ -6,7 +6,7 @@
 ## 流水线
 
 ```
-GitHub Actions（每日 09:20 CST）
+GitHub Actions（每日 09:00 CST）
   scrape.mjs   抓 github.com/trending（daily / weekly / monthly）
   analyze.mjs  方向分类、雷达矩阵、关键词热度、跨期持续、风险提示
                （配了 LLM_API_KEY 则叠加 LLM 点评，失败自动降级为规则模式）
