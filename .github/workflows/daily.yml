@@ -2,7 +2,7 @@ name: Daily Tech Radar
 
 on:
   schedule:
-    - cron: '20 1 * * *'   # UTC 01:20 = 北京 09:20
+    - cron: '0 1 * * *'   # UTC 01:00 = 北京 09:00
   workflow_dispatch: {}     # 允许手动补跑
 
 permissions:
