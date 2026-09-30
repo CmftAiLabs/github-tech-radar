@@ -79,7 +79,8 @@ export function analyze({ daily, weekly, monthly }, dates) {
   const rank = { 今日: 0, 周度: 1, 月度: 2 }
   const matrix = [...pool.values()]
     .filter((p) => p.relevant)
-    .sort((a, b) => b.score - a.score || rank[a.periods[0]] - rank[b.periods[0]])
+    // 先按榜单分组（日→周→月），组内按综合分降序
+    .sort((a, b) => rank[a.periods[0]] - rank[b.periods[0]] || b.score - a.score)
     .slice(0, 10)
 
   // —— 关键词热度：全池文本统计 ——
